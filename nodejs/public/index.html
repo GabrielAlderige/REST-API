@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD5 Hash Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            width: 500px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            width: 96%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MD5 Hash Generator</h1>
+        <input type="text" id="text-input" placeholder="Enter text">
+        <button onclick="generateHash()">Generate MD5</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        async function generateHash() {
+            const inputText = document.getElementById('text-input').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!inputText) {
+                resultDiv.textContent = "Please enter some text.";
+                return;
+            }
+
+            try {
+                const response = await fetch('/generate-md5', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: inputText })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate MD5 hash');
+                }
+
+                const data = await response.json();
+                resultDiv.textContent = `MD5 Hash: ${data.md5}`;
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
